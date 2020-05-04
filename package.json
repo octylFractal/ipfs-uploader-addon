@@ -1,0 +1,35 @@
+{
+  "name": "ipfs-uploader-addon",
+  "version": "1.0.0",
+  "description": "A program that uploads arbitrary files to IPFS and copies a sharable URL to your clipboard",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cids": "^0.8.0",
+    "clipboardy": "^2.3.0",
+    "ipfs": "^0.43.1",
+    "node-notifier": "^7.0.0",
+    "prom-client": "^11.5.3",
+    "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.4",
+    "@types/node-notifier": "^6.0.1",
+    "@types/yargs": "^15.0.4",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "dev": "ENV=dev ./build.sh",
+    "build": "./build.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "ipfs-uploader-addon": "./build/main.js"
+  },
+  "keywords": [],
+  "author": "Octavia Togami",
+  "license": "GPL-3.0-or-later"
+}
