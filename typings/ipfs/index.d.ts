@@ -20,6 +20,7 @@ declare module 'ipfs' {
         stop(): Promise<void>;
 
         add(data: FileObject, options?: {
+            pin?: boolean;
             preload?: boolean;
         }): AsyncIterable<AddResult>;
 

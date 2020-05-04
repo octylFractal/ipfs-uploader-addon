@@ -25,6 +25,7 @@ export async function upload(file: Readable, name: string): Promise<string> {
         path: `/${name}`,
         content: file,
     }, {
+        pin: false,
         preload: true,
     }));
     console.log(`Fetching ${result.cid.toString()} from IPFS central server to verify in-network...`);

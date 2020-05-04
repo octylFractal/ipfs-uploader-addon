@@ -7,5 +7,6 @@ set -x
 if [[ $ENV == dev* ]]; then
   tsc -w
 else
+  eslint 'src/**'
   tsc
 fi
