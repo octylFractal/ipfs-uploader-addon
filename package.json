@@ -7,6 +7,7 @@
     "cids": "^0.8.0",
     "clipboardy": "^2.3.0",
     "ipfs": "^0.43.1",
+    "ipfs-http-client": "^44.0.3",
     "node-notifier": "^7.0.0",
     "prom-client": "^11.5.3",
     "yargs": "^15.3.1"

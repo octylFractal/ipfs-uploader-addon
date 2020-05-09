@@ -1,6 +1,10 @@
 import {Readable} from "stream";
-import IPFS from "ipfs";
+import IPFS, {Ipfs} from "ipfs";
 import axios from "axios";
+import path from "path";
+import fs from "fs";
+import * as os from "os";
+import {promisify} from "util";
 
 const IPFS_CENTRAL_ACCESS = "https://ipfs.octyl.net";
 
@@ -18,8 +22,43 @@ async function first<T>(iterable: AsyncIterable<T>): Promise<T> {
     throw new Error("Never saw first result");
 }
 
-async function doUpload(file: Readable, name: string): Promise<string> {
+function getRepoPath(): string {
+    return process.env.IPFS_PATH || path.join(os.homedir(), '/.ipfs');
+}
+
+function getApiFile(): string {
+    return path.join(getRepoPath(), 'api');
+}
+
+function isDaemonOn(): boolean {
+    try {
+        fs.readFileSync(getApiFile());
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+async function getIpfs(): Promise<{ ipfs: Ipfs; cleanup?: () => Promise<void> }> {
+    if (isDaemonOn()) {
+        console.log("Using running daemon for control");
+        const endpoint = await promisify(fs.readFile)(getApiFile(), {encoding: 'utf-8'});
+        return {
+            ipfs: (await import("ipfs-http-client")).default(endpoint)
+        };
+    }
+    console.log("Using temporary daemon for control");
     const node = await IPFS.create();
+    return {
+        ipfs: node,
+        async cleanup(): Promise<void> {
+            await node.stop();
+        }
+    };
+}
+
+async function doUpload(file: Readable, name: string): Promise<string> {
+    const {ipfs: node, cleanup} = await getIpfs();
     try {
         console.log("IPFS initialized. Uploading file now...");
 
@@ -47,7 +86,10 @@ async function doUpload(file: Readable, name: string): Promise<string> {
         }
         throw new Error(`Ran out of retries; last error: ${lastError}`);
     } finally {
-        await node.stop();
+        if (cleanup) {
+            console.log("Cleaning up IPFS...");
+            await cleanup();
+        }
     }
 }
 
@@ -55,6 +97,6 @@ export async function upload(file: Readable, name: string): Promise<string> {
     const url = await doUpload(file, name);
 
     const realUrl = `${url}?filename=${encodeURIComponent(name)}`;
-    console.log(`Stopped IPFS node. File available at ${realUrl}`);
+    console.log(`File available at ${realUrl}`);
     return realUrl;
 }
