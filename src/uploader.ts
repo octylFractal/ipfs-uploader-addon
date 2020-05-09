@@ -6,6 +6,7 @@ import fs from "fs";
 import * as os from "os";
 import {promisify} from "util";
 import chalk from "chalk";
+import {checkAxiosError} from "./util";
 
 const IPFS_CENTRAL_ACCESS = "https://ipfs.octyl.net";
 
@@ -76,9 +77,11 @@ async function doUpload(file: Readable, name: string): Promise<string> {
         let lastError: string | undefined;
         while (retries > 0) {
             const url = `${IPFS_CENTRAL_ACCESS}/ipfs/${result.cid.toString()}`;
-            const response = await axios.get(url);
-            if (response.status >= 400) {
-                console.error(chalk.red(lastError = `Got erroneous status code: ${response.status}`));
+            try {
+                await axios.get(url);
+            } catch (e) {
+                checkAxiosError(e);
+                console.error(chalk.red(lastError = `Got erroneous status code: ${e.response.status}`));
                 console.log(`Retrying... (${retries} left)`);
                 retries--;
                 continue;

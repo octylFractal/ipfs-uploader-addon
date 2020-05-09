@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import clipboardy from "clipboardy";
 import notifier from "node-notifier";
+import {createShortLink} from "./shortlink";
 
 const args = yargs
     .option('file', {
@@ -20,6 +21,12 @@ const args = yargs
         requiresArg: true,
         string: true,
     })
+    .option('short-link', {
+        alias: 's',
+        description: 'Shorten the link in the clipboard',
+        boolean: true,
+        default: true,
+    })
     .version(false)
     .parse();
 
@@ -34,7 +41,8 @@ async function main(): Promise<void> {
     }
     const stream = file === '-' ? process.stdin : fs.createReadStream(file);
     const uploadUrl = await upload(stream, filename);
-    await clipboardy.write(uploadUrl);
+    const finalUrl = args["short-link"] ? await createShortLink(uploadUrl) : uploadUrl;
+    await clipboardy.write(finalUrl);
     notifier.notify({
         title: "IPFS File Uploaded",
         message: `Uploaded ${filename} to the IPFS network! Copied the URL to the clipboard.`,

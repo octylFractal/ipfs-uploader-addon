@@ -4,9 +4,12 @@ set -e
 
 set -x
 
+cp -r src/secrets build
+
 if [[ $ENV == dev* ]]; then
   tsc -w
 else
   eslint 'src/**'
-  tsc
+  tsc --incremental --tsBuildInfoFile build/.tsbuildinfo
+  chmod +x build/main.js
 fi
