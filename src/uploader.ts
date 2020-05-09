@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import * as os from "os";
 import {promisify} from "util";
+import chalk from "chalk";
 
 const IPFS_CENTRAL_ACCESS = "https://ipfs.octyl.net";
 
@@ -41,13 +42,13 @@ function isDaemonOn(): boolean {
 
 async function getIpfs(): Promise<{ ipfs: Ipfs; cleanup?: () => Promise<void> }> {
     if (isDaemonOn()) {
-        console.log("Using running daemon for control");
+        console.log(chalk.green("Using running daemon for control"));
         const endpoint = await promisify(fs.readFile)(getApiFile(), {encoding: 'utf-8'});
         return {
             ipfs: (await import("ipfs-http-client")).default(endpoint)
         };
     }
-    console.log("Using temporary daemon for control");
+    console.log(chalk.cyan("Using temporary daemon for control"));
     const node = await IPFS.create();
     return {
         ipfs: node,
@@ -60,7 +61,7 @@ async function getIpfs(): Promise<{ ipfs: Ipfs; cleanup?: () => Promise<void> }>
 async function doUpload(file: Readable, name: string): Promise<string> {
     const {ipfs: node, cleanup} = await getIpfs();
     try {
-        console.log("IPFS initialized. Uploading file now...");
+        console.log(`${chalk.green("IPFS initialized")}. Uploading file now...`);
 
         const result = await first(node.add({
             path: `/${name}`,
@@ -69,25 +70,26 @@ async function doUpload(file: Readable, name: string): Promise<string> {
             pin: false,
             preload: true,
         }));
-        console.log(`Fetching ${result.cid.toString()} from ${IPFS_CENTRAL_ACCESS} to verify in-network...`);
+        console.log(`Fetching ${chalk.blue(result.cid.toString())} from ` +
+            `${chalk.blue(IPFS_CENTRAL_ACCESS)} to verify in-network...`);
         let retries = 5;
         let lastError: string | undefined;
         while (retries > 0) {
             const url = `${IPFS_CENTRAL_ACCESS}/ipfs/${result.cid.toString()}`;
             const response = await axios.get(url);
             if (response.status >= 400) {
-                console.error(lastError = `Got erroneous status code: ${response.status}`);
+                console.error(chalk.red(lastError = `Got erroneous status code: ${response.status}`));
                 console.log(`Retrying... (${retries} left)`);
                 retries--;
                 continue;
             }
-            console.log("Found it in-network.");
+            console.log(chalk.green("Found it in-network."));
             return url;
         }
         throw new Error(`Ran out of retries; last error: ${lastError}`);
     } finally {
         if (cleanup) {
-            console.log("Cleaning up IPFS...");
+            console.log(chalk.cyan("Cleaning up IPFS..."));
             await cleanup();
         }
     }
@@ -97,6 +99,6 @@ export async function upload(file: Readable, name: string): Promise<string> {
     const url = await doUpload(file, name);
 
     const realUrl = `${url}?filename=${encodeURIComponent(name)}`;
-    console.log(`File available at ${realUrl}`);
+    console.log(chalk.green("File available at ") + chalk.blue(realUrl));
     return realUrl;
 }

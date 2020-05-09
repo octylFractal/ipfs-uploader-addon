@@ -4,6 +4,7 @@
   "description": "A program that uploads arbitrary files to IPFS and copies a sharable URL to your clipboard",
   "dependencies": {
     "axios": "^0.19.2",
+    "chalk": "^4.0.0",
     "cids": "^0.8.0",
     "clipboardy": "^2.3.0",
     "ipfs": "^0.43.1",
