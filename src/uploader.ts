@@ -10,20 +10,6 @@ import {checkAxiosError} from "./util";
 
 const IPFS_CENTRAL_ACCESS = "https://ipfs.octyl.net";
 
-async function first<T>(iterable: AsyncIterable<T>): Promise<T> {
-    let first: T | undefined;
-    for await (const t of iterable) {
-        if (typeof first !== "undefined") {
-            break;
-        }
-        first = t;
-    }
-    if (typeof first !== "undefined") {
-        return first;
-    }
-    throw new Error("Never saw first result");
-}
-
 function getRepoPath(): string {
     return process.env.IPFS_PATH || path.join(os.homedir(), '/.ipfs');
 }
@@ -64,13 +50,13 @@ async function doUpload(file: Readable, name: string): Promise<string> {
     try {
         console.log(`${chalk.green("IPFS initialized")}. Uploading file now...`);
 
-        const result = await first(node.add({
+        const result = await node.add({
             path: `/${name}`,
             content: file,
         }, {
             pin: false,
             preload: true,
-        }));
+        });
         console.log(`Fetching ${chalk.blue(result.cid.toString())} from ` +
             `${chalk.blue(IPFS_CENTRAL_ACCESS)} to verify in-network...`);
         let retries = 5;

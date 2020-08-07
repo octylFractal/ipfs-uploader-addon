@@ -2,11 +2,6 @@ declare module 'ipfs' {
     import {Readable} from "stream";
     import CID from "cids";
 
-    export interface AddResult {
-        path: string;
-        cid: CID;
-    }
-
     export type UnixTime = Date | { secs: number; nsecs?: number } | number[];
 
     export interface FileObject {
@@ -16,13 +11,19 @@ declare module 'ipfs' {
         mtime?: UnixTime;
     }
 
+    export interface UnixFSEntry {
+        path: string;
+        cid: CID;
+        // There are more, didn't include as we don't use them
+    }
+
     export interface Ipfs {
         stop(): Promise<void>;
 
         add(data: FileObject, options?: {
             pin?: boolean;
             preload?: boolean;
-        }): AsyncIterable<AddResult>;
+        }): UnixFSEntry;
 
         cat(ipfsPath: CID | string): AsyncIterable<Buffer>;
     }
