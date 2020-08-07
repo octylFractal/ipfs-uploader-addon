@@ -31,6 +31,9 @@ const args = yargs
     .parse();
 
 async function main(): Promise<void> {
+    if (!process.env.DISPLAY) {
+        throw new Error("No DISPLAY variable set!");
+    }
     const file = args.file;
     let filename = args.filename;
     if (!filename) {
@@ -58,4 +61,7 @@ process.on('unhandledRejection', (error) => {
     console.log('=== UNHANDLED REJECTION ===');
     console.dir(stack);
 });
-main().catch(err => console.error(err));
+main().catch(err => {
+    console.error(err);
+    process.exit(1);
+});
