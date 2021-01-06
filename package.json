@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A program that uploads arbitrary files to IPFS and copies a sharable URL to your clipboard",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "cids": "^1.0.0",
     "clipboardy": "^2.3.0",
