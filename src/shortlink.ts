@@ -1,7 +1,7 @@
-import {apikey} from "./secrets/yourls.json";
+import {apikey} from "./secrets/yourls.js";
 import axios from "axios";
-import {checkAxiosError} from "./util";
-import qs from "qs";
+import {checkAxiosError} from "./util.js";
+import * as qs from "qs";
 
 type YourlsResponse = {
     shorturl: string;

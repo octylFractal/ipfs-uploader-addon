@@ -3,27 +3,29 @@
   "version": "1.0.0",
   "description": "A program that uploads arbitrary files to IPFS and copies a sharable URL to your clipboard",
   "dependencies": {
-    "axios": "^0.21.1",
-    "chalk": "^4.1.0",
-    "cids": "^1.0.0",
-    "clipboardy": "^2.3.0",
-    "ipfs": "^0.48.2",
-    "ipfs-http-client": "^45.0.0",
-    "node-notifier": "^8.0.1",
-    "prom-client": "^12.0.0",
-    "qs": "^6.9.4",
-    "yargs": "^15.4.1"
+    "axios": "^0.24.0",
+    "chalk": "^4.1.2",
+    "clipboardy": "^3.0.0",
+    "ipfs-core": "^0.11.1",
+    "ipfs-core-types": "^0.8.1",
+    "ipfs-http-client": "^53.0.1",
+    "multiformats": "^9.4.10",
+    "node-notifier": "^10.0.0",
+    "prom-client": "^14.0.1",
+    "qs": "^6.10.1",
+    "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "@types/node": "^14.0.27",
-    "@types/node-notifier": "^6.0.1",
-    "@types/qs": "^6.9.4",
-    "@types/yargs": "^15.0.5",
-    "@typescript-eslint/eslint-plugin": "^3.8.0",
-    "@typescript-eslint/parser": "^3.8.0",
-    "eslint": "^7.6.0",
-    "tslib": "^2.0.1",
-    "typescript": "^3.9.7"
+    "@types/bl": "^5.0.2",
+    "@types/node": "^16.11.7",
+    "@types/node-notifier": "^8.0.1",
+    "@types/qs": "^6.9.7",
+    "@types/yargs": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
+    "eslint": "^8.2.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.4"
   },
   "scripts": {
     "dev": "ENV=dev ./build.sh",
@@ -33,6 +35,7 @@
   "bin": {
     "ipfs-uploader-addon": "./build/main.js"
   },
+  "type": "module",
   "keywords": [],
   "author": "Octavia Togami",
   "license": "GPL-3.0-or-later"

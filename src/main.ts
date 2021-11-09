@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import yargs from "yargs";
-import {upload} from "./uploader";
-import fs from "fs";
-import path from "path";
+import {upload} from "./uploader.js";
+import * as fs from "fs";
+import * as path from "path";
 import clipboardy from "clipboardy";
 import notifier from "node-notifier";
-import {createShortLink} from "./shortlink";
+import {createShortLink} from "./shortlink.js";
+import {hideBin} from "yargs/helpers";
 
-const args = yargs
+const argsSpec = yargs(hideBin(process.argv))
     .option('file', {
         alias: 'f',
         description: 'The file to upload. Use `-` for STDIN.',
@@ -27,13 +28,13 @@ const args = yargs
         boolean: true,
         default: true,
     })
-    .version(false)
-    .parse();
+    .version(false);
 
 async function main(): Promise<void> {
-    if (!process.env.DISPLAY) {
+    if (!process.env['DISPLAY']) {
         throw new Error("No DISPLAY variable set!");
     }
+    const args = await argsSpec.parseAsync();
     const file = args.file;
     let filename = args.filename;
     if (!filename) {

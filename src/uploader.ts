@@ -1,17 +1,18 @@
 import {Readable} from "stream";
-import IPFS, {Ipfs} from "ipfs";
+import * as IPFS from "ipfs-core-types";
+import {create as ipfsCreate} from "ipfs-core";
 import axios from "axios";
-import path from "path";
-import fs from "fs";
+import * as path from "path";
+import * as fs from "fs";
 import * as os from "os";
 import {promisify} from "util";
 import chalk from "chalk";
-import {checkAxiosError} from "./util";
+import {checkAxiosError} from "./util.js";
 
 const IPFS_CENTRAL_ACCESS = "https://ipfs.octyl.net";
 
 function getRepoPath(): string {
-    return process.env.IPFS_PATH || path.join(os.homedir(), '/.ipfs');
+    return process.env['IPFS_PATH'] || path.join(os.homedir(), '/.ipfs');
 }
 
 function getApiFile(): string {
@@ -27,16 +28,18 @@ function isDaemonOn(): boolean {
     }
 }
 
-async function getIpfs(): Promise<{ ipfs: Ipfs; cleanup?: () => Promise<void> }> {
+async function getIpfs(): Promise<{ ipfs: IPFS.IPFS; cleanup?: () => Promise<void> }> {
     if (isDaemonOn()) {
         console.log(chalk.green("Using running daemon for control"));
         const endpoint = await promisify(fs.readFile)(getApiFile(), {encoding: 'utf-8'});
         return {
-            ipfs: (await import("ipfs-http-client")).default(endpoint)
+            ipfs: (await import("ipfs-http-client")).create({
+                url: endpoint,
+            }),
         };
     }
     console.log(chalk.cyan("Using temporary daemon for control"));
-    const node = await IPFS.create();
+    const node = await ipfsCreate();
     return {
         ipfs: node,
         async cleanup(): Promise<void> {

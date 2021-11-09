@@ -2,33 +2,32 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "build",
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "strict": true,
     "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "module": "CommonJS",
+    "module": "ES2020",
     "target": "ES2020",
     "allowJs": false,
     "sourceMap": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "esModuleInterop": true,
     "moduleResolution": "node",
-    "typeRoots": [
-      "./typings"
-    ],
-    "types": [
-      "node"
-    ],
     "lib": [
       "es6",
       "es5",
       "es2017",
-      "scripthost"
+      "scripthost",
+      "dom"
     ]
   },
   "include": [
-    "src/**/*",
-    "typings/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules"
