@@ -13,8 +13,8 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "module": "ES2020",
-    "target": "ES2020",
+    "module": "ES2022",
+    "target": "ES2022",
     "allowJs": false,
     "sourceMap": true,
     "moduleResolution": "node",
@@ -24,6 +24,9 @@
       "es2017",
       "scripthost",
       "dom"
+    ],
+    "typeRoots": [
+      "./types"
     ]
   },
   "include": [
